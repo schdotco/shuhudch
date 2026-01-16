@@ -1,55 +1,67 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Dashboard KPSP</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<link rel="stylesheet" href="css/style.css">
-</head>
 <body>
 
-<header class="header">
-  <h2>📊 Dashboard KPSP Anak</h2>
-  <small>Pemantauan Perkembangan Anak (Ya=0 | Tidak=1)</small>
+<header class="topbar">
+  <div class="title">
+    <h2>Dashboard KPSP Anak</h2>
+    <small>Skrining Perkembangan Anak (SDIDTK)</small>
+  </div>
 </header>
 
 <div class="container">
 
-  <!-- ===== CARD AGREGAT (BARU) ===== -->
-  <div class="card-grid">
-    <div class="card small">
-      <h4>Total Respon</h4>
-      <span id="totalRespon">0</span>
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <select>
+      <option>Semua Usia</option>
+      <option>21 Bulan</option>
+      <option>24 Bulan</option>
+    </select>
+
+    <select>
+      <option>Semua RW</option>
+      <option>RW 01</option>
+      <option>RW 02</option>
+    </select>
+
+    <button>Tampilkan</button>
+  </div>
+
+  <!-- KARTU AGREGAT -->
+  <div class="summary-grid">
+    <div class="summary-card green">
+      <span>Total Respon</span>
+      <h3 id="totalAnak">0</h3>
     </div>
-    <div class="card small warning">
-      <h4>Total Tidak (SDIDTK)</h4>
-      <span id="totalTidak">0</span>
+
+    <div class="summary-card blue">
+      <span>Total Jawaban Tidak</span>
+      <h3 id="totalTidak">0</h3>
+    </div>
+
+    <div class="summary-card yellow">
+      <span>Meragukan</span>
+      <h3 id="totalMeragukan">0</h3>
+    </div>
+
+    <div class="summary-card red">
+      <span>Penyimpangan</span>
+      <h3 id="totalPenyimpangan">0</h3>
     </div>
   </div>
 
-  <!-- ===== GRAFIK (UPGRADE) ===== -->
+  <!-- GRAFIK -->
   <div class="card">
-    <h3>Rekap Gejala SDIDTK per KPSP</h3>
+    <h3>Rekapitulasi KPSP</h3>
     <canvas id="kpspChart"></canvas>
   </div>
 
-  <!-- ===== MENU KUESIONER (TETAP) ===== -->
+  <!-- MENU -->
   <div class="card">
-    <h3>Pilih Kuesioner KPSP</h3>
+    <h3>Kuesioner KPSP</h3>
     <div class="menu-grid">
-      <a href="questionnaire/kpsp-6.html">6 Bulan</a>
-      <a href="questionnaire/kpsp-9.html">9 Bulan</a>
-      <a href="questionnaire/kpsp-12.html">12 Bulan</a>
-      <a href="questionnaire/kpsp-15.html">15 Bulan</a>
-      <a href="questionnaire/kpsp-18.html">18 Bulan</a>
       <a href="questionnaire/kpsp-21.html">21 Bulan</a>
       <a href="questionnaire/kpsp-24.html">24 Bulan</a>
+      <a href="questionnaire/kpsp-30.html">30 Bulan</a>
       <a href="questionnaire/kpsp-36.html">36 Bulan</a>
       <a href="questionnaire/kpsp-42.html">42 Bulan</a>
       <a href="questionnaire/kpsp-48.html">48 Bulan</a>
@@ -61,72 +73,4 @@
   </div>
 
 </div>
-
-<script>
-// ===== FIREBASE CONFIG =====
-const firebaseConfig = {
-  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
-  authDomain: "schesakra.firebaseapp.com",
-  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "schesakra",
-  storageBucket: "schesakra.firebasestorage.app",
-  messagingSenderId: "672537227977",
-  appId: "1:672537227977:web:88b24f905c86eba7c05318"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// ===== DATA =====
-const usia = ["6","9","12","15","18","21","24","36","42","48","54","60","66","72"];
-let tidakPerUsia = {};
-let totalRespon = 0;
-let totalTidak = 0;
-
-usia.forEach(u => tidakPerUsia[u] = 0);
-
-// ===== LOAD DATA =====
-usia.forEach(u=>{
-  db.ref(`kpsp/${u}bulan`).once("value",snap=>{
-    snap.forEach(child=>{
-      totalRespon++;
-      const d = child.val();
-      for(let i=1;i<=10;i++){
-        if(d[`q${i}`]==="Tidak"){
-          totalTidak++;
-          tidakPerUsia[u]++;
-        }
-      }
-      updateUI();
-    });
-  });
-});
-
-// ===== UI =====
-let chart;
-
-function updateUI(){
-  document.getElementById("totalRespon").innerText = totalRespon;
-  document.getElementById("totalTidak").innerText = totalTidak;
-  renderChart();
-}
-
-function renderChart(){
-  if(chart) chart.destroy();
-
-  chart = new Chart(document.getElementById("kpspChart"),{
-    type:"bar",
-    data:{
-      labels: usia.map(u=>`${u} bln`),
-      datasets:[{
-        label:"Jumlah Jawaban Tidak",
-        data: usia.map(u=>tidakPerUsia[u]),
-        backgroundColor:"#f39c12"
-      }]
-    }
-  });
-}
-</script>
-
 </body>
-</html>
