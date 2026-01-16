@@ -184,35 +184,33 @@ body{
 
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
 <script>
-// ===== DATA CONTOH (NANTI DIGANTI FIREBASE) =====
-const kategori = {
-  sesuai: 10,
-  meragukan: 5,
-  penyimpangan: 3
+// ================= FIREBASE SDK =================
+const firebaseConfig = {
+  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
+  authDomain: "schesakra.firebaseapp.com",
+  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schesakra",
+  storageBucket: "schesakra.firebasestorage.app",
+  messagingSenderId: "672537227977",
+  appId: "1:672537227977:web:88b24f905c86eba7c05318"
 };
 
-// ISI KARTU
-document.getElementById('totalAnak').innerText =
-  kategori.sesuai + kategori.meragukan + kategori.penyimpangan;
-document.getElementById('totalTidak').innerText =
-  kategori.meragukan + kategori.penyimpangan;
-document.getElementById('totalMeragukan').innerText = kategori.meragukan;
-document.getElementById('totalPenyimpangan').innerText = kategori.penyimpangan;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-// GRAFIK
+// ================= CHART INIT =================
 const ctx = document.getElementById('kpspChart');
 
-new Chart(ctx,{
+let chartKPSP = new Chart(ctx,{
   type:'bar',
   data:{
     labels:['Sesuai','Meragukan','Penyimpangan'],
     datasets:[{
-      data:[
-        kategori.sesuai,
-        kategori.meragukan,
-        kategori.penyimpangan
-      ],
+      data:[0,0,0],
       backgroundColor:['#198754','#ffc107','#dc3545'],
       borderRadius:10,
       barThickness:80
@@ -224,11 +222,6 @@ new Chart(ctx,{
     scales:{
       y:{
         beginAtZero:true,
-        suggestedMax: Math.max(
-          kategori.sesuai,
-          kategori.meragukan,
-          kategori.penyimpangan
-        ) + 2,
         grid:{display:false},
         ticks:{precision:0}
       },
@@ -236,6 +229,53 @@ new Chart(ctx,{
     }
   }
 });
+
+// ================= LOAD DATA FROM FIREBASE =================
+function loadKPSP(){
+
+  let sesuai = 0;
+  let meragukan = 0;
+  let penyimpangan = 0;
+  let totalTidak = 0;
+  let totalRespon = 0;
+
+  db.ref('kpsp_respon').once('value', snapshot => {
+
+    snapshot.forEach(child => {
+      const d = child.val();
+      totalRespon++;
+
+      // jumlah jawaban "Tidak"
+      totalTidak += d.total_tidak || 0;
+
+      // kategori
+      if(d.kategori === 'Sesuai') sesuai++;
+      else if(d.kategori === 'Meragukan') meragukan++;
+      else if(d.kategori === 'Penyimpangan') penyimpangan++;
+    });
+
+    // ===== UPDATE KARTU =====
+    document.getElementById('totalAnak').innerText = totalRespon;
+    document.getElementById('totalTidak').innerText = totalTidak;
+    document.getElementById('totalMeragukan').innerText = meragukan;
+    document.getElementById('totalPenyimpangan').innerText = penyimpangan;
+
+    // ===== UPDATE GRAFIK =====
+    chartKPSP.data.datasets[0].data = [
+      sesuai,
+      meragukan,
+      penyimpangan
+    ];
+
+    chartKPSP.options.scales.y.suggestedMax =
+      Math.max(sesuai, meragukan, penyimpangan) + 2;
+
+    chartKPSP.update();
+  });
+}
+
+// ================= AUTO LOAD =================
+loadKPSP();
 </script>
 
 </body>
