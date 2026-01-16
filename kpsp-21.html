@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>KPSP Anak 21 Bulan</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<style>
+body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; }
+.card { background:#fff; padding:20px; border-radius:8px; max-width:900px; margin:auto; }
+.question { margin-bottom:15px; }
+label { font-weight:bold; display:block; }
+select, input { width:100%; padding:8px; margin-top:6px; }
+button {
+  margin-top:20px;
+  padding:12px;
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  border-radius:5px;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Kuesioner Pra Skrining Perkembangan (KPSP)</h2>
+<h3>Anak Umur 21 Bulan</h3>
+
+<input id="nama" placeholder="Nama Anak" required><br><br>
+
+<!-- PERTANYAAN -->
+<div class="question">
+<label>1. Apakah anak dapat mencoret-coret kertas dengan pensil tanpa bantuan atau petunjuk?</label>
+<select id="q1"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>2. Apakah anak dapat menyusun dua kubus?</label>
+<select id="q2"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>3. Apakah anak dapat menunjuk minimal satu gambar yang Anda sebutkan namanya?</label>
+<select id="q3"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>4. Tanpa bimbingan atau petunjuk, apakah anak dapat menunjuk minimal satu bagian tubuhnya dengan benar (misalnya rambut, mata, hidung, mulut)?</label>
+<select id="q4"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>5. Apakah anak dapat mengucapkan minimal 7 kata yang mempunyai arti (selain “mama” dan “papa”)?</label>
+<select id="q5"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>6. Apakah anak dapat minum dari cangkir atau gelas sendiri tanpa banyak yang tumpah?</label>
+<select id="q6"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>7. Apakah anak suka meniru pekerjaan rumah tangga (misalnya merapikan mainan, menyapu, dan sebagainya)?</label>
+<select id="q7"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>8. Apakah anak dapat berlari tanpa terjatuh?</label>
+<select id="q8"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>9. Tanpa berpegangan, apakah anak dapat membungkuk untuk memungut benda di lantai lalu berdiri kembali?</label>
+<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<div class="question">
+<label>10. Apakah anak dapat berjalan mundur minimal 5 langkah tanpa kehilangan keseimbangan?</label>
+<select id="q10"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+</div>
+
+<button onclick="simpan()">Simpan Kuesioner</button>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
+  authDomain: "schesakra.firebaseapp.com",
+  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schesakra",
+  storageBucket: "schesakra.firebasestorage.app",
+  messagingSenderId: "672537227977",
+  appId: "1:672537227977:web:88b24f905c86eba7c05318"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function simpan(){
+  const data = {
+    nama: nama.value,
+    umur: 21,
+    q1: q1.value,
+    q2: q2.value,
+    q3: q3.value,
+    q4: q4.value,
+    q5: q5.value,
+    q6: q6.value,
+    q7: q7.value,
+    q8: q8.value,
+    q9: q9.value,
+    q10: q10.value,
+    timestamp: Date.now()
+  };
+
+  db.ref("kpsp/21bulan").push(data)
+    .then(() => alert("Data KPSP 21 bulan berhasil disimpan"))
+    .catch(err => alert("Error: " + err));
+}
+</script>
+
+</body>
+</html>
