@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Data KPSP Anak</title>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- EXPORT EXCEL -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f9;
+  margin:0;
+}
+.topbar{
+  background:#0d6efd;
+  color:#fff;
+  padding:16px 24px;
+}
+.container{
+  padding:20px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.filter-bar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+.filter-bar select,
+.filter-bar button{
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+.filter-bar button{
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th,td{
+  border:1px solid #dee2e6;
+  padding:6px;
+  text-align:center;
+}
+th{
+  background:#f1f3f5;
+}
+.badge{
+  padding:4px 8px;
+  border-radius:6px;
+  color:#fff;
+  font-size:12px;
+}
+.sesuai{background:#198754}
+.meragukan{background:#ffc107;color:#000}
+.penyimpangan{background:#dc3545}
+.tidak{color:#dc3545;font-weight:bold}
+.ya{color:#198754}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <h2>Data KPSP Anak</h2>
+  <small>Rekap input kuesioner KPSP</small>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<!-- FILTER -->
+<div class="filter-bar">
+  <select id="filterUsia">
+    <option value="all">Semua Usia</option>
+    <option value="6">6 Bulan</option>
+    <option value="9">9 Bulan</option>
+    <option value="12">12 Bulan</option>
+    <option value="15">15 Bulan</option>
+    <option value="18">18 Bulan</option>
+    <option value="21">21 Bulan</option>
+    <option value="24">24 Bulan</option>
+    <option value="36">36 Bulan</option>
+    <option value="48">48 Bulan</option>
+    <option value="60">60 Bulan</option>
+    <option value="72">72 Bulan</option>
+  </select>
+
+  <select id="filterKategori">
+    <option value="all">Semua Kategori</option>
+    <option value="Sesuai">Sesuai</option>
+    <option value="Meragukan">Meragukan</option>
+    <option value="Penyimpangan">Penyimpangan</option>
+  </select>
+
+  <button onclick="loadData()">Tampilkan</button>
+  <button onclick="exportExcel()">Export Excel</button>
+</div>
+
+<!-- TABEL -->
+<table id="tabelKPSP">
+<thead>
+<tr>
+  <th>No</th>
+  <th>Nama</th>
+  <th>NIK</th>
+  <th>Usia</th>
+  <th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th>
+  <th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th><th>Q10</th>
+  <th>Total Tidak</th>
+  <th>Kategori</th>
+  <th>Tanggal</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</div>
+</div>
+
+<script>
+// ============ FIREBASE ============
+const firebaseConfig = {
+  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
+  authDomain: "schesakra.firebaseapp.com",
+  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schesakra",
+  storageBucket: "schesakra.firebasestorage.app",
+  messagingSenderId: "672537227977",
+  appId: "1:672537227977:web:88b24f905c86eba7c05318"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ============ LOAD DATA ============
+function loadData(){
+  const usiaFilter = filterUsia.value;
+  const kategoriFilter = filterKategori.value;
+  const tbody = document.querySelector("#tabelKPSP tbody");
+
+  tbody.innerHTML = "";
+  let no = 1;
+
+  db.ref("kpsp_respon").once("value", snap=>{
+    snap.forEach(child=>{
+      const d = child.val();
+
+      if(usiaFilter !== "all" && d.usia != usiaFilter) return;
+      if(kategoriFilter !== "all" && d.kategori !== kategoriFilter) return;
+
+      let totalTidak = 0;
+      let q = [];
+
+      for(let i=1;i<=10;i++){
+        const val = d.jawaban?.[`q${i}`] || "-";
+        if(val === "Tidak") totalTidak++;
+        q.push(`<td class="${val==='Tidak'?'tidak':'ya'}">${val}</td>`);
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${no++}</td>
+        <td>${d.nama || "-"}</td>
+        <td>${d.nik || "-"}</td>
+        <td>${d.usia || "-"}</td>
+        ${q.join("")}
+        <td>${totalTidak}</td>
+        <td>
+          <span class="badge ${d.kategori?.toLowerCase()}">
+            ${d.kategori}
+          </span>
+        </td>
+        <td>${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : "-"}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+// ============ EXPORT EXCEL ============
+function exportExcel(){
+  const table = document.getElementById("tabelKPSP");
+  const wb = XLSX.utils.table_to_book(table, {sheet:"Data KPSP"});
+  XLSX.writeFile(wb, "data_kpsp.xlsx");
+}
+
+// AUTO LOAD
+loadData();
+</script>
+
+</body>
+</html>
