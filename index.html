@@ -132,29 +132,42 @@ body{
     </select>
   </div>
 
-  <!-- FILTER USIA -->
-  <div class="filter-bar">
-    <select>
-      <option>Semua Usia</option>
-      <option>6 Bulan</option>
-      <option>9 Bulan</option>
-      <option>12 Bulan</option>
-      <option>15 Bulan</option>
-      <option>18 Bulan</option>
-      <option>21 Bulan</option>
-      <option>24 Bulan</option>
-      <option>30 Bulan</option>
-      <option>36 Bulan</option>
-      <option>42 Bulan</option>
-      <option>48 Bulan</option>
-      <option>54 Bulan</option>
-      <option>60 Bulan</option>
-      <option>66 Bulan</option>
-      <option>72 Bulan</option>
-    </select>
+<!-- FILTER USIA -->
+<div class="filter-bar">
+  <select id="filterUsia">
+    <option value="all">Semua Usia</option>
+    <option value="6">6 Bulan</option>
+    <option value="9">9 Bulan</option>
+    <option value="12">12 Bulan</option>
+    <option value="15">15 Bulan</option>
+    <option value="18">18 Bulan</option>
+    <option value="21">21 Bulan</option>
+    <option value="24">24 Bulan</option>
+    <option value="30">30 Bulan</option>
+    <option value="36">36 Bulan</option>
+    <option value="42">42 Bulan</option>
+    <option value="48">48 Bulan</option>
+    <option value="54">54 Bulan</option>
+    <option value="60">60 Bulan</option>
+    <option value="66">66 Bulan</option>
+    <option value="72">72 Bulan</option>
+  </select>
 
-    <button>Tampilkan</button>
-  </div>
+  <button onclick="loadDashboard()">Tampilkan</button>
+
+  <!-- ✅ TOMBOL LIST DATA -->
+  <button onclick="location.href='data-kpsp.html'" style="background:#6c757d">
+    List Data
+  </button>
+</div>
+
+  <button onclick="loadDashboard()">Tampilkan</button>
+
+  <!-- ✅ TOMBOL LIST DATA -->
+  <button onclick="location.href='data-kpsp.html'" style="background:#6c757d">
+    List Data
+  </button>
+</div>
 
   <!-- KARTU AGREGAT -->
   <div class="summary-grid">
@@ -179,7 +192,7 @@ body{
   <!-- GRAFIK -->
   <div class="card">
     <h3>Rekapitulasi KPSP</h3>
-    <canvas id="kpspChart" style="height:260px;></canvas>
+    <canvas id="kpspChart" style="height:260px;"></canvas>
   </div>
 
 </div>
@@ -217,6 +230,8 @@ function hitungKategori(totalTidak){
 let chart;
 
 function loadDashboard(){
+  const usiaFilter = document.getElementById("filterUsia").value;
+
   let totalRespon = 0;
   let sesuaiUsia = 0;
   let kategoriCount = {
@@ -230,6 +245,9 @@ function loadDashboard(){
       const d = child.val();
       if(!d.jawaban) return;
 
+      // 🔎 FILTER USIA
+      if(usiaFilter !== "all" && String(d.usia) !== usiaFilter) return;
+
       totalRespon++;
       let totalTidak = 0;
 
@@ -237,12 +255,23 @@ function loadDashboard(){
         if(d.jawaban[`q${i}`] === "Tidak") totalTidak++;
       }
 
-      // SESUAI USIA = SEMUA YA
+      // SESUAI USIA = SEMUA JAWABAN YA
       if(totalTidak === 0) sesuaiUsia++;
 
       const kategori = hitungKategori(totalTidak);
       kategoriCount[kategori]++;
     });
+
+    // UPDATE KARTU
+    totalAnak.innerText = totalRespon;
+    totalTidak.innerText = sesuaiUsia; // SESUAI USIA
+    totalMeragukan.innerText = kategoriCount.Meragukan;
+    totalPenyimpangan.innerText = kategoriCount.Penyimpangan;
+
+    // UPDATE GRAFIK
+    renderChart(kategoriCount);
+  });
+}
 
     /* ===== ISI KARTU ===== */
     document.getElementById("totalAnak").innerText = totalRespon;
