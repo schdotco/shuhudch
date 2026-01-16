@@ -137,7 +137,7 @@ th{
 </div>
 
 <script>
-// ============ FIREBASE ============
+// ================= FIREBASE =================
 const firebaseConfig = {
   apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
   authDomain: "schesakra.firebaseapp.com",
@@ -151,7 +151,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ============ LOAD DATA ============
+// ================= KATEGORI =================
+function hitungKategori(totalTidak){
+  if(totalTidak <= 1) return "Sesuai";
+  if(totalTidak <= 3) return "Meragukan";
+  return "Penyimpangan";
+}
+
+// ================= LOAD DATA =================
 function loadData(){
   const usiaFilter = filterUsia.value;
   const kategoriFilter = filterKategori.value;
@@ -160,45 +167,52 @@ function loadData(){
   tbody.innerHTML = "";
   let no = 1;
 
-  db.ref("kpsp_respon").once("value", snap=>{
-    snap.forEach(child=>{
-      const d = child.val();
+  const usiaList = [
+    "6bulan","9bulan","12bulan","15bulan","18bulan",
+    "21bulan","24bulan","36bulan","48bulan","60bulan","72bulan"
+  ];
 
-      if(usiaFilter !== "all" && d.usia != usiaFilter) return;
+  usiaList.forEach(path=>{
+    db.ref("kpsp/"+path).once("value", snap=>{
+      snap.forEach(child=>{
+        const d = child.val();
 
-      let totalTidak = 0;
-      let q = [];
+        if(usiaFilter !== "all" && d.umur != usiaFilter) return;
 
-      for(let i=1;i<=10;i++){
-        const val = d.jawaban?.[`q${i}`] || "-";
-        if(val === "Tidak") totalTidak++;
-        q.push(`<td class="${val==='Tidak'?'tidak':'ya'}">${val}</td>`);
-      }
+        let totalTidak = 0;
+        let qHtml = "";
 
-      const kategori = hitungKategori(totalTidak);
+        for(let i=1;i<=10;i++){
+          const val = d[`q${i}`] || "-";
+          if(val === "Tidak") totalTidak++;
+          qHtml += `<td class="${val==='Tidak'?'tidak':'ya'}">${val}</td>`;
+        }
 
-      if(kategoriFilter !== "all" && kategori !== kategoriFilter) return;
+        const kategori = hitungKategori(totalTidak);
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${no++}</td>
-        <td>${d.nama || "-"}</td>
-        <td>${d.nik || "-"}</td>
-        <td>${d.tanggal_lahir || "-"}</td>
-        <td>${d.usia || "-"}</td>
-        ${q.join("")}
-        <td>
-          <span class="badge ${kategori.toLowerCase()}">${kategori}</span>
-        </td>
-        <td>${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : "-"}</td>
-      `;
+        if(kategoriFilter !== "all" && kategori !== kategoriFilter) return;
 
-      tbody.appendChild(tr);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${no++}</td>
+          <td>${d.nama || "-"}</td>
+          <td>${d.nik || "-"}</td>
+          <td>${d.tanggal_lahir || "-"}</td>
+          <td>${d.umur || "-"}</td>
+          ${qHtml}
+          <td>
+            <span class="badge ${kategori.toLowerCase()}">${kategori}</span>
+          </td>
+          <td>${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : "-"}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
     });
   });
 }
 
-// ============ EXPORT EXCEL ============
+// ================= EXPORT EXCEL =================
 function exportExcel(){
   const table = document.getElementById("tabelKPSP");
   const wb = XLSX.utils.table_to_book(table, {sheet:"Data KPSP"});
