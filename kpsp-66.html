@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>KPSP Anak 66 Bulan</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<style>
+body{font-family:Arial;background:#f4f6f9;padding:20px}
+.card{background:#fff;padding:20px;border-radius:8px;max-width:900px;margin:auto}
+.question{margin-bottom:14px}
+label{font-weight:bold}
+select,input{width:100%;padding:8px;margin-top:5px}
+button{margin-top:20px;padding:12px;background:#0d6efd;color:#fff;border:none;border-radius:5px;font-size:16px}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h2>KPSP Anak Umur 66 Bulan</h2>
+
+<input id="nama" placeholder="Nama Anak"><br><br>
+
+<div class="question"><label>1. Menggambar tanda “+”</label>
+<select id="q1"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>2. Menggambar kotak</label>
+<select id="q2"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>3. Menggambar orang ≥ 6 bagian tubuh</label>
+<select id="q3"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>4. Mengetahui konsep angka 5</label>
+<select id="q4"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>5. Mengartikan 5 kata dengan benar</label>
+<select id="q5"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>6. Memahami analogi berlawanan</label>
+<select id="q6"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>7. Bereaksi tenang saat ditinggal orang tua</label>
+<select id="q7"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>8. Berpakaian sendiri tanpa dibantu</label>
+<select id="q8"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>9. Berdiri 1 kaki ≥ 6 detik</label>
+<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<div class="question"><label>10. Menangkap bola dengan kedua tangan</label>
+<select id="q10"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+
+<button onclick="simpan()">Simpan KPSP 66 Bulan</button>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
+  authDomain: "schesakra.firebaseapp.com",
+  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schesakra",
+  storageBucket: "schesakra.firebasestorage.app",
+  messagingSenderId: "672537227977",
+  appId: "1:672537227977:web:88b24f905c86eba7c05318"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function simpan(){
+  const data = {
+    nama: nama.value,
+    umur: 66,
+    q1:q1.value,q2:q2.value,q3:q3.value,q4:q4.value,q5:q5.value,
+    q6:q6.value,q7:q7.value,q8:q8.value,q9:q9.value,q10:q10.value,
+    timestamp: Date.now()
+  };
+
+  db.ref("kpsp/66bulan").push(data)
+    .then(()=>alert("KPSP 66 bulan tersimpan"))
+    .catch(err=>alert(err));
+}
+</script>
+</body>
+</html>
