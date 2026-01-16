@@ -31,58 +31,104 @@ button {
 <h2>Kuesioner Pra Skrining Perkembangan (KPSP)</h2>
 <h3>Bayi Umur 9 Bulan</h3>
 
-<input id="nama" placeholder="Nama Anak" required><br><br>
+<!-- IDENTITAS -->
+<div class="field">
+  <label>Nama Anak</label>
+  <input type="text" id="nama" placeholder="Nama anak">
+</div>
+
+<div class="field">
+  <label>NIK Anak</label>
+  <input type="text" id="nik" placeholder="16 digit NIK" maxlength="16">
+</div>
+
+<div class="field">
+  <label>Tanggal Lahir</label>
+  <input type="date" id="tglLahir">
+</div>
+
+<hr>
 
 <!-- PERTANYAAN -->
 <div class="question">
 <label>1. Apakah bayi dapat memungut benda kecil (kismis/kacang/biskuit) dengan jari-jarinya?</label>
-<select id="q1"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>2. Apakah bayi dapat memungut dan memegang 2 kubus masing-masing dengan satu tangan?</label>
-<select id="q2"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>3. Apakah bayi mencoba mencari benda yang dijatuhkan dan tidak terlihat?</label>
-<select id="q3"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>4. Apakah bayi berusaha mendapatkan mainan yang diletakkan di luar jangkauannya?</label>
-<select id="q4"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>5. Apakah bayi menengok ke belakang saat mendengar suara pelan atau bisikan?</label>
-<select id="q5"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>6. Apakah bayi dapat mengucapkan 2 suku kata yang sama, seperti “ma-ma”, “da-da”, atau “pa-pa”?</label>
-<select id="q6"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>7. Apakah bayi dapat makan kue kering atau biskuit sendiri?</label>
-<select id="q7"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>8. Apakah bayi dapat memindahkan mainan dari satu tangan ke tangan lainnya?</label>
-<select id="q8"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>9. Tanpa disangga, apakah bayi dapat duduk sendiri selama ±60 detik?</label>
-<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>10. Jika Anda mengangkat bayi melalui ketiaknya ke posisi berdiri, dapatkah ia menyangga sebagian berat badan dengan kedua kakinya?
   Jawab 'Ya' bila ia mencoba berdiri dan sebagian berat badan tertumpu pada kedua kakinya</label>
-<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <button onclick="simpan()">Simpan Kuesioner</button>
@@ -102,19 +148,27 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+function valRadio(name){
+  const r = document.querySelector(`input[name="${name}"]:checked`);
+  return r ? r.value : "";
+}
+
 function simpan(){
   const data = {
     nama: nama.value,
-    umur: 9,
-    q1: q1.value,
-    q2: q2.value,
-    q3: q3.value,
-    q4: q4.value,
-    q5: q5.value,
-    q6: q6.value,
-    q7: q7.value,
-    q8: q8.value,
-    q9: q9.value,
+    nik: nik.value,
+    tanggal_lahir: tglLahir.value,
+    umur: 6,
+    q1: valRadio("q1"),
+    q2: valRadio("q2"),
+    q3: valRadio("q3"),
+    q4: valRadio("q4"),
+    q5: valRadio("q5"),
+    q6: valRadio("q6"),
+    q7: valRadio("q7"),
+    q8: valRadio("q8"),
+    q9: valRadio("q9"),
+    q10: valRadio("q10"),
     timestamp: Date.now()
   };
 
