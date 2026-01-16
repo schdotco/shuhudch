@@ -8,30 +8,126 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; }
-.card { background:#fff; padding:20px; border-radius:8px; max-width:900px; margin:auto; }
-.question { margin-bottom:15px; }
-label { font-weight:bold; display:block; }
-select, input { width:100%; padding:8px; margin-top:6px; }
-button {
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+  margin:0;
+  padding:20px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#0d6efd;
+  color:#fff;
+  padding:16px 20px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+.topbar h2{
+  margin:0;
+  font-size:20px;
+}
+.topbar small{
+  opacity:.9;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  max-width:900px;
+  margin:auto;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+
+.section-title{
+  font-size:16px;
+  font-weight:bold;
+  margin-bottom:10px;
+  border-bottom:2px solid #e9ecef;
+  padding-bottom:6px;
+}
+
+/* FORM */
+.field{
+  margin-bottom:12px;
+}
+label{
+  font-weight:bold;
+  font-size:14px;
+  display:block;
+  margin-bottom:4px;
+}
+input[type=text],
+input[type=date]{
+  width:100%;
+  padding:8px;
+  border:1px solid #ced4da;
+  border-radius:6px;
+  font-size:14px;
+}
+
+/* QUESTION */
+.question{
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px dashed #dee2e6;
+}
+.question:last-child{
+  border-bottom:none;
+}
+.question label{
+  font-weight:normal;
+}
+
+/* OPTIONS */
+.options{
+  display:flex;
+  gap:20px;
+  margin-top:6px;
+}
+.options label{
+  font-weight:normal;
+  cursor:pointer;
+}
+
+/* BUTTON */
+button{
   margin-top:20px;
-  padding:12px;
+  padding:12px 20px;
   background:#0d6efd;
   color:#fff;
   border:none;
-  border-radius:5px;
-  font-size:16px;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer;
+}
+button:hover{
+  background:#084298;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .options{
+    flex-direction:column;
+    gap:6px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-<h2>Kuesioner Pra Skrining Perkembangan (KPSP)</h2>
-<h3>Bayi Umur 9 Bulan</h3>
+<div class="topbar">
+  <h2>Kuesioner KPSP</h2>
+  <small>Bayi Usia 9 Bulan</small>
+</div>
 
-<!-- IDENTITAS -->
+<div class="card">
+
+<div class="section-title">Identitas Anak</div>
+
 <div class="field">
   <label>Nama Anak</label>
   <input type="text" id="nama" placeholder="Nama anak">
@@ -47,9 +143,8 @@ button {
   <input type="date" id="tglLahir">
 </div>
 
-<hr>
+<div class="section-title">Pertanyaan KPSP</div>
 
-<!-- PERTANYAAN -->
 <div class="question">
 <label>1. Apakah bayi dapat memungut benda kecil (kismis/kacang/biskuit) dengan jari-jarinya?</label>
 <div class="options">
@@ -61,77 +156,77 @@ button {
 <div class="question">
 <label>2. Apakah bayi dapat memungut dan memegang 2 kubus masing-masing dengan satu tangan?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q2" value="Ya"> Ya</label>
+  <label><input type="radio" name="q2" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>3. Apakah bayi mencoba mencari benda yang dijatuhkan dan tidak terlihat?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q3" value="Ya"> Ya</label>
+  <label><input type="radio" name="q3" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>4. Apakah bayi berusaha mendapatkan mainan yang diletakkan di luar jangkauannya?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q4" value="Ya"> Ya</label>
+  <label><input type="radio" name="q4" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>5. Apakah bayi menengok ke belakang saat mendengar suara pelan atau bisikan?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q5" value="Ya"> Ya</label>
+  <label><input type="radio" name="q5" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>6. Apakah bayi dapat mengucapkan 2 suku kata yang sama, seperti “ma-ma”, “da-da”, atau “pa-pa”?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q6" value="Ya"> Ya</label>
+  <label><input type="radio" name="q6" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>7. Apakah bayi dapat makan kue kering atau biskuit sendiri?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q7" value="Ya"> Ya</label>
+  <label><input type="radio" name="q7" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>8. Apakah bayi dapat memindahkan mainan dari satu tangan ke tangan lainnya?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q8" value="Ya"> Ya</label>
+  <label><input type="radio" name="q8" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
 <label>9. Tanpa disangga, apakah bayi dapat duduk sendiri selama ±60 detik?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q9" value="Ya"> Ya</label>
+  <label><input type="radio" name="q9" value="Tidak"> Tidak</label>
 </div>
 </div>
 
 <div class="question">
-<label>10. Jika Anda mengangkat bayi melalui ketiaknya ke posisi berdiri, dapatkah ia menyangga sebagian berat badan dengan kedua kakinya?
-  Jawab 'Ya' bila ia mencoba berdiri dan sebagian berat badan tertumpu pada kedua kakinya</label>
+<label>10. Jika Anda mengangkat bayi melalui ketiaknya ke posisi berdiri, dapatkah ia menyangga sebagian berat badan dengan kedua kakinya?</label>
 <div class="options">
-  <label><input type="radio" name="q1" value="Ya"> Ya</label>
-  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+  <label><input type="radio" name="q10" value="Ya"> Ya</label>
+  <label><input type="radio" name="q10" value="Tidak"> Tidak</label>
 </div>
 </div>
 
-<button onclick="simpan()">Simpan Kuesioner</button>
+<button onclick="simpan()">Simpan KPSP 9 Bulan</button>
+
 </div>
 
 <script>
@@ -158,23 +253,28 @@ function simpan(){
     nama: nama.value,
     nik: nik.value,
     tanggal_lahir: tglLahir.value,
-    umur: 6,
-    q1: valRadio("q1"),
-    q2: valRadio("q2"),
-    q3: valRadio("q3"),
-    q4: valRadio("q4"),
-    q5: valRadio("q5"),
-    q6: valRadio("q6"),
-    q7: valRadio("q7"),
-    q8: valRadio("q8"),
-    q9: valRadio("q9"),
-    q10: valRadio("q10"),
+    usia: 9,
+    jawaban:{
+      q1: valRadio("q1"),
+      q2: valRadio("q2"),
+      q3: valRadio("q3"),
+      q4: valRadio("q4"),
+      q5: valRadio("q5"),
+      q6: valRadio("q6"),
+      q7: valRadio("q7"),
+      q8: valRadio("q8"),
+      q9: valRadio("q9"),
+      q10: valRadio("q10")
+    },
     timestamp: Date.now()
   };
 
-  db.ref("kpsp/9bulan").push(data)
-    .then(() => alert("Data KPSP 9 bulan berhasil disimpan"))
-    .catch(err => alert("Error: " + err));
+  db.ref("kpsp_respon").push(data)
+    .then(()=>{
+      alert("Data KPSP 9 bulan berhasil disimpan");
+      location.href="index.html";
+    })
+    .catch(err=>alert(err));
 }
 </script>
 
