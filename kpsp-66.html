@@ -8,50 +8,153 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-body{font-family:Arial;background:#f4f6f9;padding:20px}
-.card{background:#fff;padding:20px;border-radius:8px;max-width:900px;margin:auto}
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  max-width:900px;
+  margin:auto;
+}
+h2,h3{margin-top:0}
+.field{margin-bottom:12px}
+label{font-weight:bold;display:block;margin-bottom:4px}
+input[type=text],
+input[type=date]{
+  width:100%;
+  padding:8px;
+  border:1px solid #ced4da;
+  border-radius:4px;
+}
 .question{margin-bottom:14px}
-label{font-weight:bold}
-select,input{width:100%;padding:8px;margin-top:5px}
-button{margin-top:20px;padding:12px;background:#0d6efd;color:#fff;border:none;border-radius:5px;font-size:16px}
+.options{
+  display:flex;
+  gap:24px;
+  margin-top:6px;
+}
+.options label{font-weight:normal}
+button{
+  margin-top:20px;
+  padding:12px 18px;
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+  font-size:15px;
+  cursor:pointer;
+}
 </style>
 </head>
 
 <body>
+
 <div class="card">
-<h2>KPSP Anak Umur 66 Bulan</h2>
+<h2>Kuesioner Pra Skrining Perkembangan (KPSP)</h2>
+<h3>Anak Umur 66 Bulan</h3>
 
-<input id="nama" placeholder="Nama Anak"><br><br>
+<!-- IDENTITAS (SAMA DENGAN KPSP-6) -->
+<div class="field">
+  <label>Nama Anak</label>
+  <input type="text" id="nama">
+</div>
 
-<div class="question"><label>1. Menggambar tanda “+”</label>
-<select id="q1"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="field">
+  <label>NIK Anak</label>
+  <input type="text" id="nik" maxlength="16">
+</div>
 
-<div class="question"><label>2. Menggambar kotak</label>
-<select id="q2"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="field">
+  <label>Tanggal Lahir</label>
+  <input type="date" id="tglLahir">
+</div>
 
-<div class="question"><label>3. Menggambar orang ≥ 6 bagian tubuh</label>
-<select id="q3"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<hr>
 
-<div class="question"><label>4. Mengetahui konsep angka 5</label>
-<select id="q4"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<!-- PERTANYAAN (TIDAK DIUBAH) -->
 
-<div class="question"><label>5. Mengartikan 5 kata dengan benar</label>
-<select id="q5"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>1. Menggambar tanda “+”</label>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
+</div>
 
-<div class="question"><label>6. Memahami analogi berlawanan</label>
-<select id="q6"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>2. Menggambar kotak</label>
+<div class="options">
+  <label><input type="radio" name="q2" value="Ya"> Ya</label>
+  <label><input type="radio" name="q2" value="Tidak"> Tidak</label>
+</div>
+</div>
 
-<div class="question"><label>7. Bereaksi tenang saat ditinggal orang tua</label>
-<select id="q7"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>3. Menggambar orang ≥ 6 bagian tubuh</label>
+<div class="options">
+  <label><input type="radio" name="q3" value="Ya"> Ya</label>
+  <label><input type="radio" name="q3" value="Tidak"> Tidak</label>
+</div>
+</div>
 
-<div class="question"><label>8. Berpakaian sendiri tanpa dibantu</label>
-<select id="q8"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>4. Mengetahui konsep angka 5</label>
+<div class="options">
+  <label><input type="radio" name="q4" value="Ya"> Ya</label>
+  <label><input type="radio" name="q4" value="Tidak"> Tidak</label>
+</div>
+</div>
 
-<div class="question"><label>9. Berdiri 1 kaki ≥ 6 detik</label>
-<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>5. Mengartikan 5 kata dengan benar</label>
+<div class="options">
+  <label><input type="radio" name="q5" value="Ya"> Ya</label>
+  <label><input type="radio" name="q5" value="Tidak"> Tidak</label>
+</div>
+</div>
 
-<div class="question"><label>10. Menangkap bola dengan kedua tangan</label>
-<select id="q10"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select></div>
+<div class="question">
+<label>6. Memahami analogi berlawanan</label>
+<div class="options">
+  <label><input type="radio" name="q6" value="Ya"> Ya</label>
+  <label><input type="radio" name="q6" value="Tidak"> Tidak</label>
+</div>
+</div>
+
+<div class="question">
+<label>7. Bereaksi tenang saat ditinggal orang tua</label>
+<div class="options">
+  <label><input type="radio" name="q7" value="Ya"> Ya</label>
+  <label><input type="radio" name="q7" value="Tidak"> Tidak</label>
+</div>
+</div>
+
+<div class="question">
+<label>8. Berpakaian sendiri tanpa dibantu</label>
+<div class="options">
+  <label><input type="radio" name="q8" value="Ya"> Ya</label>
+  <label><input type="radio" name="q8" value="Tidak"> Tidak</label>
+</div>
+</div>
+
+<div class="question">
+<label>9. Berdiri 1 kaki ≥ 6 detik</label>
+<div class="options">
+  <label><input type="radio" name="q9" value="Ya"> Ya</label>
+  <label><input type="radio" name="q9" value="Tidak"> Tidak</label>
+</div>
+</div>
+
+<div class="question">
+<label>10. Menangkap bola dengan kedua tangan</label>
+<div class="options">
+  <label><input type="radio" name="q10" value="Ya"> Ya</label>
+  <label><input type="radio" name="q10" value="Tidak"> Tidak</label>
+</div>
+</div>
 
 <button onclick="simpan()">Simpan KPSP 66 Bulan</button>
 </div>
@@ -70,19 +173,37 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+function valRadio(name){
+  const r = document.querySelector(`input[name="${name}"]:checked`);
+  return r ? r.value : "";
+}
+
 function simpan(){
   const data = {
     nama: nama.value,
-    umur: 66,
-    q1:q1.value,q2:q2.value,q3:q3.value,q4:q4.value,q5:q5.value,
-    q6:q6.value,q7:q7.value,q8:q8.value,q9:q9.value,q10:q10.value,
+    nik: nik.value,
+    tanggal_lahir: tglLahir.value,
+    usia: 66,
+    jawaban:{
+      q1: valRadio("q1"),
+      q2: valRadio("q2"),
+      q3: valRadio("q3"),
+      q4: valRadio("q4"),
+      q5: valRadio("q5"),
+      q6: valRadio("q6"),
+      q7: valRadio("q7"),
+      q8: valRadio("q8"),
+      q9: valRadio("q9"),
+      q10: valRadio("q10")
+    },
     timestamp: Date.now()
   };
 
-  db.ref("kpsp/66bulan").push(data)
-    .then(()=>alert("KPSP 66 bulan tersimpan"))
-    .catch(err=>alert(err));
+  db.ref("kpsp_respon").push(data)
+    .then(()=>alert("KPSP 66 bulan berhasil disimpan"))
+    .catch(err=>alert(err.message));
 }
 </script>
+
 </body>
 </html>
