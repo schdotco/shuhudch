@@ -1,3 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard KPSP Anak</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f9;
+  margin:0;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#0d6efd;
+  color:#fff;
+  padding:16px 20px;
+}
+.topbar h2{margin:0;font-size:20px}
+.topbar small{opacity:.9}
+
+/* CONTAINER */
+.container{
+  padding:20px;
+}
+
+/* FILTER */
+.filter-bar{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.filter-bar select,
+.filter-bar button,
+.filter-bar a{
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  text-decoration:none;
+  background:#fff;
+  cursor:pointer;
+}
+.filter-bar button{
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+}
+.filter-bar a{
+  background:#e9ecef;
+  color:#000;
+}
+
+/* SUMMARY */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+.summary-card{
+  background:#fff;
+  padding:16px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.summary-card span{font-size:13px;color:#666}
+.summary-card h3{margin:6px 0 0;font-size:26px}
+
+.green{border-left:6px solid #198754}
+.blue{border-left:6px solid #0d6efd}
+.yellow{border-left:6px solid #ffc107}
+.red{border-left:6px solid #dc3545}
+
+/* CARD */
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  margin-bottom:20px;
+}
+</style>
+</head>
+
 <body>
 
 <header class="topbar">
@@ -29,9 +118,7 @@
       <option>60 Bulan</option>
       <option>66 Bulan</option>
       <option>72 Bulan</option>
-      
     </select>
-
     <button>Tampilkan</button>
   </div>
 
@@ -41,17 +128,14 @@
       <span>Total Respon</span>
       <h3 id="totalAnak">0</h3>
     </div>
-
     <div class="summary-card blue">
       <span>Total Jawaban Tidak</span>
       <h3 id="totalTidak">0</h3>
     </div>
-
     <div class="summary-card yellow">
       <span>Meragukan</span>
       <h3 id="totalMeragukan">0</h3>
     </div>
-
     <div class="summary-card red">
       <span>Penyimpangan</span>
       <h3 id="totalPenyimpangan">0</h3>
@@ -87,4 +171,41 @@
   </div>
 
 </div>
+
+<script>
+const ctx = document.getElementById('kpspChart');
+
+const kategori = {
+  sesuai: 12,
+  meragukan: 5,
+  penyimpangan: 3
+};
+
+document.getElementById('totalAnak').innerText = 20;
+document.getElementById('totalTidak').innerText = 14;
+document.getElementById('totalMeragukan').innerText = kategori.meragukan;
+document.getElementById('totalPenyimpangan').innerText = kategori.penyimpangan;
+
+new Chart(ctx,{
+  type:'bar',
+  data:{
+    labels:['Sesuai','Meragukan','Penyimpangan'],
+    datasets:[{
+      data:[
+        kategori.sesuai,
+        kategori.meragukan,
+        kategori.penyimpangan
+      ],
+      backgroundColor:['#198754','#ffc107','#dc3545'],
+      borderRadius:8
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true}}
+  }
+});
+</script>
+
 </body>
+</html>
