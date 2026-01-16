@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard KPSP Anak</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -14,75 +12,89 @@ body{
   margin:0;
 }
 
-/* TOPBAR */
 .topbar{
   background:#0d6efd;
   color:#fff;
-  padding:16px 20px;
+  padding:16px 24px;
 }
-.topbar h2{margin:0;font-size:20px}
-.topbar small{opacity:.9}
 
-/* CONTAINER */
+.title h2{
+  margin:0;
+  font-size:20px;
+}
+.title small{
+  opacity:.9;
+}
+
 .container{
   padding:20px;
+  display:grid;
+  gap:20px;
 }
 
-/* FILTER */
 .filter-bar{
   display:flex;
   gap:10px;
-  margin-bottom:20px;
   flex-wrap:wrap;
 }
+
 .filter-bar select,
-.filter-bar button,
-.filter-bar a{
+.filter-bar button{
   padding:8px 12px;
   border-radius:6px;
   border:1px solid #ccc;
-  text-decoration:none;
-  background:#fff;
-  cursor:pointer;
 }
+
 .filter-bar button{
   background:#0d6efd;
   color:#fff;
   border:none;
-}
-.filter-bar a{
-  background:#e9ecef;
-  color:#000;
+  cursor:pointer;
 }
 
-/* SUMMARY */
 .summary-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  margin-bottom:20px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
 }
+
 .summary-card{
   background:#fff;
-  padding:16px;
   border-radius:10px;
+  padding:16px;
   box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
-.summary-card span{font-size:13px;color:#666}
-.summary-card h3{margin:6px 0 0;font-size:26px}
+
+.summary-card span{
+  font-size:13px;
+  color:#666;
+}
+
+.summary-card h3{
+  margin:6px 0 0;
+  font-size:26px;
+}
 
 .green{border-left:6px solid #198754}
 .blue{border-left:6px solid #0d6efd}
 .yellow{border-left:6px solid #ffc107}
 .red{border-left:6px solid #dc3545}
 
-/* CARD */
 .card{
   background:#fff;
   padding:20px;
   border-radius:10px;
   box-shadow:0 2px 6px rgba(0,0,0,.1);
-  margin-bottom:20px;
+}
+
+.card h3{
+  margin-top:0;
+}
+
+@media(max-width:768px){
+  .filter-bar{
+    flex-direction:column;
+  }
 }
 </style>
 </head>
@@ -98,7 +110,29 @@ body{
 
 <div class="container">
 
-  <!-- FILTER -->
+  <!-- PILIH KUESIONER -->
+  <div class="filter-bar">
+    <select onchange="if(this.value) location.href=this.value">
+      <option value="">Pilih Kuesioner KPSP</option>
+      <option value="kpsp-6.html">6 Bulan</option>
+      <option value="kpsp-9.html">9 Bulan</option>
+      <option value="kpsp-12.html">12 Bulan</option>
+      <option value="kpsp-15.html">15 Bulan</option>
+      <option value="kpsp-18.html">18 Bulan</option>
+      <option value="kpsp-21.html">21 Bulan</option>
+      <option value="kpsp-24.html">24 Bulan</option>
+      <option value="kpsp-30.html">30 Bulan</option>
+      <option value="kpsp-36.html">36 Bulan</option>
+      <option value="kpsp-42.html">42 Bulan</option>
+      <option value="kpsp-48.html">48 Bulan</option>
+      <option value="kpsp-54.html">54 Bulan</option>
+      <option value="kpsp-60.html">60 Bulan</option>
+      <option value="kpsp-66.html">66 Bulan</option>
+      <option value="kpsp-72.html">72 Bulan</option>
+    </select>
+  </div>
+
+  <!-- FILTER USIA -->
   <div class="filter-bar">
     <select>
       <option>Semua Usia</option>
@@ -110,7 +144,6 @@ body{
       <option>21 Bulan</option>
       <option>24 Bulan</option>
       <option>30 Bulan</option>
-      <option>32 Bulan</option>
       <option>36 Bulan</option>
       <option>42 Bulan</option>
       <option>48 Bulan</option>
@@ -119,6 +152,7 @@ body{
       <option>66 Bulan</option>
       <option>72 Bulan</option>
     </select>
+
     <button>Tampilkan</button>
   </div>
 
@@ -148,43 +182,26 @@ body{
     <canvas id="kpspChart"></canvas>
   </div>
 
-  <!-- MENU -->
-  <div class="card">
-    <h3>Kuesioner KPSP</h3>
-    <div class="filter-bar">
-      <a href="kpsp-6.html">6 Bulan</a>
-      <a href="kpsp-9.html">9 Bulan</a>
-      <a href="kpsp-12.html">12 Bulan</a>
-      <a href="kpsp-15.html">15 Bulan</a>
-      <a href="kpsp-18.html">18 Bulan</a>
-      <a href="kpsp-21.html">21 Bulan</a>
-      <a href="kpsp-24.html">24 Bulan</a>
-      <a href="kpsp-30.html">30 Bulan</a>
-      <a href="kpsp-36.html">36 Bulan</a>
-      <a href="kpsp-42.html">42 Bulan</a>
-      <a href="kpsp-48.html">48 Bulan</a>
-      <a href="kpsp-54.html">54 Bulan</a>
-      <a href="kpsp-60.html">60 Bulan</a>
-      <a href="kpsp-66.html">66 Bulan</a>
-      <a href="kpsp-72.html">72 Bulan</a>
-    </div>
-  </div>
-
 </div>
 
 <script>
-const ctx = document.getElementById('kpspChart');
-
+// ===== DATA CONTOH (NANTI DIGANTI FIREBASE) =====
 const kategori = {
-  sesuai: 12,
+  sesuai: 10,
   meragukan: 5,
   penyimpangan: 3
 };
 
-document.getElementById('totalAnak').innerText = 20;
-document.getElementById('totalTidak').innerText = 14;
+// ISI KARTU
+document.getElementById('totalAnak').innerText =
+  kategori.sesuai + kategori.meragukan + kategori.penyimpangan;
+document.getElementById('totalTidak').innerText =
+  kategori.meragukan + kategori.penyimpangan;
 document.getElementById('totalMeragukan').innerText = kategori.meragukan;
 document.getElementById('totalPenyimpangan').innerText = kategori.penyimpangan;
+
+// GRAFIK
+const ctx = document.getElementById('kpspChart');
 
 new Chart(ctx,{
   type:'bar',
@@ -197,12 +214,26 @@ new Chart(ctx,{
         kategori.penyimpangan
       ],
       backgroundColor:['#198754','#ffc107','#dc3545'],
-      borderRadius:8
+      borderRadius:10,
+      barThickness:80
     }]
   },
   options:{
+    responsive:true,
     plugins:{legend:{display:false}},
-    scales:{y:{beginAtZero:true}}
+    scales:{
+      y:{
+        beginAtZero:true,
+        suggestedMax: Math.max(
+          kategori.sesuai,
+          kategori.meragukan,
+          kategori.penyimpangan
+        ) + 2,
+        grid:{display:false},
+        ticks:{precision:0}
+      },
+      x:{grid:{display:false}}
+    }
   }
 });
 </script>
