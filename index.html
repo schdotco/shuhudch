@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard KPSP Anak</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
 body{
@@ -18,13 +21,8 @@ body{
   padding:16px 24px;
 }
 
-.title h2{
-  margin:0;
-  font-size:20px;
-}
-.title small{
-  opacity:.9;
-}
+.title h2{margin:0;font-size:20px}
+.title small{opacity:.9}
 
 .container{
   padding:20px;
@@ -65,15 +63,8 @@ body{
   box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
 
-.summary-card span{
-  font-size:13px;
-  color:#666;
-}
-
-.summary-card h3{
-  margin:6px 0 0;
-  font-size:26px;
-}
+.summary-card span{font-size:13px;color:#666}
+.summary-card h3{margin:6px 0 0;font-size:26px}
 
 .green{border-left:6px solid #198754}
 .blue{border-left:6px solid #0d6efd}
@@ -87,14 +78,14 @@ body{
   box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
 
-.card h3{
-  margin-top:0;
+.chart-wrapper{
+  position:relative;
+  height:260px;
 }
 
 @media(max-width:768px){
-  .filter-bar{
-    flex-direction:column;
-  }
+  .filter-bar{flex-direction:column}
+  .chart-wrapper{height:220px}
 }
 </style>
 </head>
@@ -132,51 +123,39 @@ body{
     </select>
   </div>
 
-<!-- FILTER USIA -->
-<div class="filter-bar">
-  <select id="filterUsia">
-    <option value="all">Semua Usia</option>
-    <option value="6">6 Bulan</option>
-    <option value="9">9 Bulan</option>
-    <option value="12">12 Bulan</option>
-    <option value="15">15 Bulan</option>
-    <option value="18">18 Bulan</option>
-    <option value="21">21 Bulan</option>
-    <option value="24">24 Bulan</option>
-    <option value="30">30 Bulan</option>
-    <option value="36">36 Bulan</option>
-    <option value="42">42 Bulan</option>
-    <option value="48">48 Bulan</option>
-    <option value="54">54 Bulan</option>
-    <option value="60">60 Bulan</option>
-    <option value="66">66 Bulan</option>
-    <option value="72">72 Bulan</option>
-  </select>
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <select id="filterUsia">
+      <option value="all">Semua Usia</option>
+      <option value="6">6 Bulan</option>
+      <option value="9">9 Bulan</option>
+      <option value="12">12 Bulan</option>
+      <option value="15">15 Bulan</option>
+      <option value="18">18 Bulan</option>
+      <option value="21">21 Bulan</option>
+      <option value="24">24 Bulan</option>
+      <option value="30">30 Bulan</option>
+      <option value="36">36 Bulan</option>
+      <option value="42">42 Bulan</option>
+      <option value="48">48 Bulan</option>
+      <option value="54">54 Bulan</option>
+      <option value="60">60 Bulan</option>
+      <option value="66">66 Bulan</option>
+      <option value="72">72 Bulan</option>
+    </select>
 
-  <button onclick="loadDashboard()">Tampilkan</button>
+    <button onclick="loadDashboard()">Tampilkan</button>
+    <button onclick="location.href='data-kpsp.html'" style="background:#6c757d">List Data</button>
+  </div>
 
-  <!-- ✅ TOMBOL LIST DATA -->
-  <button onclick="location.href='data-kpsp.html'" style="background:#6c757d">
-    List Data
-  </button>
-</div>
-
-  <button onclick="loadDashboard()">Tampilkan</button>
-
-  <!-- ✅ TOMBOL LIST DATA -->
-  <button onclick="location.href='data-kpsp.html'" style="background:#6c757d">
-    List Data
-  </button>
-</div>
-
-  <!-- KARTU AGREGAT -->
+  <!-- AGREGAT -->
   <div class="summary-grid">
     <div class="summary-card green">
       <span>Total Respon</span>
       <h3 id="totalAnak">0</h3>
     </div>
     <div class="summary-card blue">
-      <span>Total Jawaban Tidak</span>
+      <span>Sesuai Usia</span>
       <h3 id="totalTidak">0</h3>
     </div>
     <div class="summary-card yellow">
@@ -192,20 +171,14 @@ body{
   <!-- GRAFIK -->
   <div class="card">
     <h3>Rekapitulasi KPSP</h3>
-    <canvas id="kpspChart" style="height:260px;"></canvas>
+    <div class="chart-wrapper">
+      <canvas id="kpspChart"></canvas>
+    </div>
   </div>
 
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-/* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
   authDomain: "schesakra.firebaseapp.com",
@@ -219,108 +192,64 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ================= HITUNG KATEGORI ================= */
-function hitungKategori(totalTidak){
-  if(totalTidak <= 1) return "Sesuai";
-  if(totalTidak <= 3) return "Meragukan";
+function hitungKategori(t){
+  if(t <= 1) return "Sesuai";
+  if(t <= 3) return "Meragukan";
   return "Penyimpangan";
 }
 
-/* ================= LOAD DASHBOARD ================= */
 let chart;
 
 function loadDashboard(){
-  const usiaFilter = document.getElementById("filterUsia").value;
-
-  let totalRespon = 0;
-  let sesuaiUsia = 0;
-  let kategoriCount = {
-    Sesuai: 0,
-    Meragukan: 0,
-    Penyimpangan: 0
-  };
+  const usia = filterUsia.value;
+  let total = 0, sesuai = 0;
+  let kategori = {Sesuai:0,Meragukan:0,Penyimpangan:0};
 
   db.ref("kpsp_respon").once("value", snap=>{
-    snap.forEach(child=>{
-      const d = child.val();
+    snap.forEach(c=>{
+      const d = c.val();
       if(!d.jawaban) return;
+      if(usia !== "all" && String(d.usia) !== usia) return;
 
-      // 🔎 FILTER USIA
-      if(usiaFilter !== "all" && String(d.usia) !== usiaFilter) return;
+      total++;
+      let tdk = 0;
+      for(let i=1;i<=10;i++) if(d.jawaban[`q${i}`]==="Tidak") tdk++;
 
-      totalRespon++;
-      let totalTidak = 0;
-
-      for(let i=1;i<=10;i++){
-        if(d.jawaban[`q${i}`] === "Tidak") totalTidak++;
-      }
-
-      // SESUAI USIA = SEMUA JAWABAN YA
-      if(totalTidak === 0) sesuaiUsia++;
-
-      const kategori = hitungKategori(totalTidak);
-      kategoriCount[kategori]++;
+      if(tdk === 0) sesuai++;
+      kategori[hitungKategori(tdk)]++;
     });
 
-    // UPDATE KARTU
-    totalAnak.innerText = totalRespon;
-    totalTidak.innerText = sesuaiUsia; // SESUAI USIA
-    totalMeragukan.innerText = kategoriCount.Meragukan;
-    totalPenyimpangan.innerText = kategoriCount.Penyimpangan;
+    totalAnak.innerText = total;
+    totalTidak.innerText = sesuai;
+    totalMeragukan.innerText = kategori.Meragukan;
+    totalPenyimpangan.innerText = kategori.Penyimpangan;
 
-    // UPDATE GRAFIK
-    renderChart(kategoriCount);
+    renderChart(kategori);
   });
 }
 
-    /* ===== ISI KARTU ===== */
-    document.getElementById("totalAnak").innerText = totalRespon;
-    document.getElementById("totalTidak").innerText = sesuaiUsia; // DIGANTI
-    document.getElementById("totalMeragukan").innerText = kategoriCount.Meragukan;
-    document.getElementById("totalPenyimpangan").innerText = kategoriCount.Penyimpangan;
-
-    /* ===== GRAFIK ===== */
-    renderChart(kategoriCount);
-  });
-}
-
-/* ================= GRAFIK ================= */
-function renderChart(data){
-  const ctx = document.getElementById("kpspChart");
-
+function renderChart(d){
   if(chart) chart.destroy();
-
-  chart = new Chart(ctx,{
+  chart = new Chart(kpspChart,{
     type:"bar",
     data:{
       labels:["Sesuai","Meragukan","Penyimpangan"],
       datasets:[{
-        data:[
-          data.Sesuai,
-          data.Meragukan,
-          data.Penyimpangan
-        ],
+        data:[d.Sesuai,d.Meragukan,d.Penyimpangan],
         backgroundColor:["#198754","#ffc107","#dc3545"],
-        borderRadius:10,
-        barThickness:70
+        borderRadius:8,
+        barThickness:window.innerWidth<768?40:70
       }]
     },
     options:{
       responsive:true,
+      maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{
-        y:{
-          beginAtZero:true,
-          grid:{display:false},
-          ticks:{precision:0}
-        },
-        x:{grid:{display:false}}
-      }
+      scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}
     }
   });
 }
 
-/* ================= INIT ================= */
 loadDashboard();
 </script>
 
