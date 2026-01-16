@@ -8,19 +8,48 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; }
-.card { background:#fff; padding:20px; border-radius:8px; max-width:900px; margin:auto; }
-.question { margin-bottom:15px; }
-label { font-weight:bold; display:block; }
-select, input { width:100%; padding:8px; margin-top:6px; }
-button {
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  max-width:900px;
+  margin:auto;
+}
+h2,h3{margin-top:0}
+.field{margin-bottom:12px}
+label{font-weight:bold;display:block;margin-bottom:4px}
+input[type=text],
+input[type=date]{
+  width:100%;
+  padding:8px;
+  border:1px solid #ced4da;
+  border-radius:4px;
+}
+.question{
+  margin-bottom:14px;
+}
+.options{
+  display:flex;
+  gap:24px;
+  margin-top:6px;
+}
+.options label{
+  font-weight:normal;
+}
+button{
   margin-top:20px;
-  padding:12px;
+  padding:12px 18px;
   background:#0d6efd;
   color:#fff;
   border:none;
-  border-radius:5px;
-  font-size:16px;
+  border-radius:4px;
+  font-size:15px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -31,60 +60,107 @@ button {
 <h2>Kuesioner Pra Skrining Perkembangan (KPSP)</h2>
 <h3>Anak Umur 15 Bulan</h3>
 
-<input id="nama" placeholder="Nama Anak" required><br><br>
+<!-- IDENTITAS -->
+<div class="field">
+  <label>Nama Anak</label>
+  <input type="text" id="nama" placeholder="Nama anak">
+</div>
 
-<!-- PERTANYAAN -->
+<div class="field">
+  <label>NIK Anak</label>
+  <input type="text" id="nik" placeholder="16 digit NIK" maxlength="16">
+</div>
+
+<div class="field">
+  <label>Tanggal Lahir</label>
+  <input type="date" id="tglLahir">
+</div>
+
+<hr>
+
+<!-- PERTANYAAN (TEKS ASLI – TIDAK DIUBAH) -->
+
 <div class="question">
 <label>1. Tanpa bantuan, apakah anak dapat mempertemukan dua kubus kecil yang dipegangnya?</label>
-<select id="q1"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q1" value="Ya"> Ya</label>
+  <label><input type="radio" name="q1" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>2. Apakah anak dapat memasukkan satu kubus ke dalam cangkir?</label>
-<select id="q2"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q2" value="Ya"> Ya</label>
+  <label><input type="radio" name="q2" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>3. Apakah anak dapat berjalan dengan berpegangan?</label>
-<select id="q3"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q3" value="Ya"> Ya</label>
+  <label><input type="radio" name="q3" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>4. Apakah anak dapat mengucapkan “papa” atau “mama” dengan tepat saat memanggil orang tuanya?</label>
-<select id="q4"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q4" value="Ya"> Ya</label>
+  <label><input type="radio" name="q4" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>5. Apakah anak dapat mengucapkan satu kata bermakna selain “mama” atau “papa”?</label>
-<select id="q5"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q5" value="Ya"> Ya</label>
+  <label><input type="radio" name="q5" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>6. Apakah anak dapat bertepuk tangan atau melambaikan tangan tanpa bantuan?</label>
-<select id="q6"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q6" value="Ya"> Ya</label>
+  <label><input type="radio" name="q6" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>7. Apakah anak dapat menunjukkan apa yang diinginkannya tanpa menangis atau merengek?</label>
-<select id="q7"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q7" value="Ya"> Ya</label>
+  <label><input type="radio" name="q7" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>8. Apakah anak dapat berdiri sendiri tanpa berpegangan selama ±30 detik atau lebih?</label>
-<select id="q8"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q8" value="Ya"> Ya</label>
+  <label><input type="radio" name="q8" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>9. Tanpa berpegangan, apakah anak dapat membungkuk mengambil benda di lantai lalu berdiri kembali?</label>
-<select id="q9"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q9" value="Ya"> Ya</label>
+  <label><input type="radio" name="q9" value="Tidak"> Tidak</label>
+</div>
 </div>
 
 <div class="question">
 <label>10. Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?</label>
-<select id="q10"><option value="">Pilih</option><option>Ya</option><option>Tidak</option></select>
+<div class="options">
+  <label><input type="radio" name="q10" value="Ya"> Ya</label>
+  <label><input type="radio" name="q10" value="Tidak"> Tidak</label>
+</div>
 </div>
 
-<button onclick="simpan()">Simpan Kuesioner</button>
+<button onclick="simpan()">Simpan KPSP 15 Bulan</button>
 </div>
 
 <script>
@@ -101,26 +177,35 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+function valRadio(name){
+  const r = document.querySelector(`input[name="${name}"]:checked`);
+  return r ? r.value : "";
+}
+
 function simpan(){
   const data = {
     nama: nama.value,
-    umur: 15,
-    q1: q1.value,
-    q2: q2.value,
-    q3: q3.value,
-    q4: q4.value,
-    q5: q5.value,
-    q6: q6.value,
-    q7: q7.value,
-    q8: q8.value,
-    q9: q9.value,
-    q10: q10.value,
+    nik: nik.value,
+    tanggal_lahir: tglLahir.value,
+    usia: 15,
+    jawaban:{
+      q1: valRadio("q1"),
+      q2: valRadio("q2"),
+      q3: valRadio("q3"),
+      q4: valRadio("q4"),
+      q5: valRadio("q5"),
+      q6: valRadio("q6"),
+      q7: valRadio("q7"),
+      q8: valRadio("q8"),
+      q9: valRadio("q9"),
+      q10: valRadio("q10")
+    },
     timestamp: Date.now()
   };
 
-  db.ref("kpsp/15bulan").push(data)
-    .then(() => alert("Data KPSP 15 bulan berhasil disimpan"))
-    .catch(err => alert("Error: " + err));
+  db.ref("kpsp_respon").push(data)
+    .then(()=>alert("Data KPSP 15 bulan berhasil disimpan"))
+    .catch(err=>alert(err.message));
 }
 </script>
 
