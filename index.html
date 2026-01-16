@@ -3,47 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard KPSP</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="css/style.css">
+
+<style>
+body{font-family:Arial;background:#f4f6f9;padding:20px}
+.header{margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{
+  background:#fff;padding:20px;border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1)
+}
+.card h3{margin:0;font-size:14px;color:#666}
+.card span{font-size:28px;font-weight:bold}
+canvas{background:#fff;border-radius:10px;padding:10px}
+</style>
 </head>
+
 <body>
 
-<header class="header">
-  <h2>📊 Dashboard KPSP Anak</h2>
-  <small>Pemantauan Perkembangan Anak</small>
-</header>
-
-<div class="container">
-
-  <!-- GRAFIK -->
-  <div class="card">
-    <h3>Rekap Hasil KPSP</h3>
-    <canvas id="kpspChart"></canvas>
-  </div>
-
-  <!-- MENU KUESIONER -->
-  <div class="card">
-    <h3>Pilih Kuesioner KPSP</h3>
-    <div class="menu-grid">
-      <a href="questionnaire/kpsp-6.html">6 Bulan</a>
-      <a href="questionnaire/kpsp-9.html">9 Bulan</a>
-      <a href="questionnaire/kpsp-12.html">12 Bulan</a>
-      <a href="questionnaire/kpsp-15.html">15 Bulan</a>
-      <a href="questionnaire/kpsp-18.html">18 Bulan</a>
-      <a href="questionnaire/kpsp-21.html">21 Bulan</a>
-      <a href="questionnaire/kpsp-24.html">24 Bulan</a>
-      <a href="questionnaire/kpsp-36.html">36 Bulan</a>
-      <a href="questionnaire/kpsp-42.html">42 Bulan</a>
-      <a href="questionnaire/kpsp-48.html">48 Bulan</a>
-      <a href="questionnaire/kpsp-54.html">54 Bulan</a>
-      <a href="questionnaire/kpsp-60.html">60 Bulan</a>
-      <a href="questionnaire/kpsp-66.html">66 Bulan</a>
-      <a href="questionnaire/kpsp-72.html">72 Bulan</a>
-    </div>
-  </div>
-
+<div class="header">
+  <h2>Dashboard SDIDTK – KPSP</h2>
+  <small>Skor: Ya = 0 | Tidak = 1</small>
 </div>
 
-<script src="js/chart.js"></script>
+<!-- ===== CARD AGREGAT ===== -->
+<div class="cards">
+  <div class="card"><h3>Total Respon KPSP</h3><span id="totalRespon">0</span></div>
+  <div class="card"><h3>Total Tidak (Gejala SDIDTK)</h3><span id="totalTidak">0</span></div>
+</div>
+
+<br>
+
+<!-- ===== GRAFIK ===== -->
+<div class="cards">
+  <div class="card">
+    <h3>Grafik SDIDTK per Usia KPSP</h3>
+    <canvas id="chartUsia"></canvas>
+  </div>
+  <div class="card">
+    <h3>Grafik SDIDTK per Pertanyaan</h3>
+    <canvas id="chartSoal"></canvas>
+  </div>
+</div>
+
+<script>
+// ===== FIREBASE =====
+const firebaseConfig = {
+  apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
+  authDomain: "schesakra.firebaseapp.com",
+  databaseURL: "https://schesakra-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schesakra",
+  storageBucket: "schesakra.firebasestorage.app",
+  messagingSenderId: "672537227977",
+  appId: "1:672537227977:web:88b24f905c86eba7c05318"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ===== VAR AGREGAT =====
+const usiaList = ["6","9","12","15","18","21","24","36","42","48","54","60","66","72"];
+let usiaTidak = {};
+let soalTidak = Array(10).fill(0);
+let totalRespon = 0;
+let totalTidak = 0;
+
+usiaList.forEach(u => usiaTidak[u] = 0);
+
+// ===== LOAD DATA =====
+usiaList.forEach(usia=>{
+  db.ref(`kpsp/${usia}bulan`).once("value",snap=>{
+    snap.forEach(child=>{
+      totalRespon++;
+      const data = child.val();
+
+      for(let i=1;i<=10;i++){
+        if(data[`q${i}`]==="Tidak"){
+          totalTidak++;
+          usiaTidak[usia]++;
+          soalTidak[i-1]++;
+        }
+      }
+
+      updateUI();
+    });
+  });
+});
+
+// ===== UPDATE UI =====
+function updateUI(){
+  totalResponEl.innerText = totalRespon;
+  totalTidakEl.innerText = totalTidak;
+  drawCharts();
+}
+
+const totalResponEl = document.getElementById("totalRespon");
+const totalTidakEl = document.getElementById("totalTidak");
+
+// ===== GRAFIK =====
+let chartUsia, chartSoal;
+
+function drawCharts(){
+  if(chartUsia) chartUsia.destroy();
+  if(chartSoal) chartSoal.destroy();
+
+  chartUsia = new Chart(document.getElementById("chartUsia"),{
+    type:"bar",
+    data:{
+      labels: usiaList.map(u=>`${u} bln`),
+      datasets:[{
+        label:"Jumlah Tidak",
+        data: usiaList.map(u=>usiaTidak[u])
+      }]
+    }
+  });
+
+  chartSoal = new Chart(document.getElementById("chartSoal"),{
+    type:"bar",
+    data:{
+      labels: ["Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","Q10"],
+      datasets:[{
+        label:"Jumlah Tidak",
+        data: soalTidak
+      }]
+    }
+  });
+}
+</script>
+
 </body>
 </html>
