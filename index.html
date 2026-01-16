@@ -187,8 +187,12 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-// ================= FIREBASE SDK =================
+/* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBk57WWCAV9PbUQBb_bj7mPtl09oNz7WnA",
   authDomain: "schesakra.firebaseapp.com",
@@ -202,80 +206,93 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ================= CHART INIT =================
-const ctx = document.getElementById('kpspChart');
+/* ================= HITUNG KATEGORI ================= */
+function hitungKategori(totalTidak){
+  if(totalTidak <= 1) return "Sesuai";
+  if(totalTidak <= 3) return "Meragukan";
+  return "Penyimpangan";
+}
 
-let chartKPSP = new Chart(ctx,{
-  type:'bar',
-  data:{
-    labels:['Sesuai','Meragukan','Penyimpangan'],
-    datasets:[{
-      data:[0,0,0],
-      backgroundColor:['#198754','#ffc107','#dc3545'],
-      borderRadius:10,
-      barThickness:80
-    }]
-  },
-  options:{
-    responsive:true,
-    plugins:{legend:{display:false}},
-    scales:{
-      y:{
-        beginAtZero:true,
-        grid:{display:false},
-        ticks:{precision:0}
-      },
-      x:{grid:{display:false}}
-    }
-  }
-});
+/* ================= LOAD DASHBOARD ================= */
+let chart;
 
-// ================= LOAD DATA FROM FIREBASE =================
-function loadKPSP(){
-
-  let sesuai = 0;
-  let meragukan = 0;
-  let penyimpangan = 0;
-  let totalTidak = 0;
+function loadDashboard(){
   let totalRespon = 0;
+  let sesuaiUsia = 0;
+  let kategoriCount = {
+    Sesuai: 0,
+    Meragukan: 0,
+    Penyimpangan: 0
+  };
 
-  db.ref('kpsp_respon').once('value', snapshot => {
-
-    snapshot.forEach(child => {
+  db.ref("kpsp_respon").once("value", snap=>{
+    snap.forEach(child=>{
       const d = child.val();
+      if(!d.jawaban) return;
+
       totalRespon++;
+      let totalTidak = 0;
 
-      // jumlah jawaban "Tidak"
-      totalTidak += d.total_tidak || 0;
+      for(let i=1;i<=10;i++){
+        if(d.jawaban[`q${i}`] === "Tidak") totalTidak++;
+      }
 
-      // kategori
-      if(d.kategori === 'Sesuai') sesuai++;
-      else if(d.kategori === 'Meragukan') meragukan++;
-      else if(d.kategori === 'Penyimpangan') penyimpangan++;
+      // SESUAI USIA = SEMUA YA
+      if(totalTidak === 0) sesuaiUsia++;
+
+      const kategori = hitungKategori(totalTidak);
+      kategoriCount[kategori]++;
     });
 
-    // ===== UPDATE KARTU =====
-    document.getElementById('totalAnak').innerText = totalRespon;
-    document.getElementById('totalTidak').innerText = totalTidak;
-    document.getElementById('totalMeragukan').innerText = meragukan;
-    document.getElementById('totalPenyimpangan').innerText = penyimpangan;
+    /* ===== ISI KARTU ===== */
+    document.getElementById("totalAnak").innerText = totalRespon;
+    document.getElementById("totalTidak").innerText = sesuaiUsia; // DIGANTI
+    document.getElementById("totalMeragukan").innerText = kategoriCount.Meragukan;
+    document.getElementById("totalPenyimpangan").innerText = kategoriCount.Penyimpangan;
 
-    // ===== UPDATE GRAFIK =====
-    chartKPSP.data.datasets[0].data = [
-      sesuai,
-      meragukan,
-      penyimpangan
-    ];
-
-    chartKPSP.options.scales.y.suggestedMax =
-      Math.max(sesuai, meragukan, penyimpangan) + 2;
-
-    chartKPSP.update();
+    /* ===== GRAFIK ===== */
+    renderChart(kategoriCount);
   });
 }
 
-// ================= AUTO LOAD =================
-loadKPSP();
+/* ================= GRAFIK ================= */
+function renderChart(data){
+  const ctx = document.getElementById("kpspChart");
+
+  if(chart) chart.destroy();
+
+  chart = new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels:["Sesuai","Meragukan","Penyimpangan"],
+      datasets:[{
+        data:[
+          data.Sesuai,
+          data.Meragukan,
+          data.Penyimpangan
+        ],
+        backgroundColor:["#198754","#ffc107","#dc3545"],
+        borderRadius:10,
+        barThickness:70
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{
+          beginAtZero:true,
+          grid:{display:false},
+          ticks:{precision:0}
+        },
+        x:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+/* ================= INIT ================= */
+loadDashboard();
 </script>
 
 </body>
