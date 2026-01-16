@@ -151,7 +151,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ================= KATEGORI =================
+// ================= HITUNG KATEGORI =================
 function hitungKategori(totalTidak){
   if(totalTidak <= 1) return "Sesuai";
   if(totalTidak <= 3) return "Meragukan";
@@ -167,47 +167,42 @@ function loadData(){
   tbody.innerHTML = "";
   let no = 1;
 
-  const usiaList = [
-    "6bulan","9bulan","12bulan","15bulan","18bulan",
-    "21bulan","24bulan","36bulan","48bulan","60bulan","72bulan"
-  ];
+  db.ref("kpsp_respon").once("value", snap=>{
+    snap.forEach(child=>{
+      const d = child.val();
 
-  usiaList.forEach(path=>{
-    db.ref("kpsp/"+path).once("value", snap=>{
-      snap.forEach(child=>{
-        const d = child.val();
+      // FILTER USIA
+      if(usiaFilter !== "all" && String(d.usia) !== usiaFilter) return;
 
-        if(usiaFilter !== "all" && d.umur != usiaFilter) return;
+      let totalTidak = 0;
+      let qHtml = "";
 
-        let totalTidak = 0;
-        let qHtml = "";
+      for(let i=1;i<=10;i++){
+        const val = d.jawaban?.[`q${i}`] || "-";
+        if(val === "Tidak") totalTidak++;
+        qHtml += `<td class="${val==='Tidak'?'tidak':'ya'}">${val}</td>`;
+      }
 
-        for(let i=1;i<=10;i++){
-          const val = d[`q${i}`] || "-";
-          if(val === "Tidak") totalTidak++;
-          qHtml += `<td class="${val==='Tidak'?'tidak':'ya'}">${val}</td>`;
-        }
+      const kategori = hitungKategori(totalTidak);
 
-        const kategori = hitungKategori(totalTidak);
+      // FILTER KATEGORI
+      if(kategoriFilter !== "all" && kategori !== kategoriFilter) return;
 
-        if(kategoriFilter !== "all" && kategori !== kategoriFilter) return;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${no++}</td>
+        <td>${d.nama || "-"}</td>
+        <td>${d.nik || "-"}</td>
+        <td>${d.tanggal_lahir || "-"}</td>
+        <td>${d.usia || "-"}</td>
+        ${qHtml}
+        <td>
+          <span class="badge ${kategori.toLowerCase()}">${kategori}</span>
+        </td>
+        <td>${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : "-"}</td>
+      `;
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${no++}</td>
-          <td>${d.nama || "-"}</td>
-          <td>${d.nik || "-"}</td>
-          <td>${d.tanggal_lahir || "-"}</td>
-          <td>${d.umur || "-"}</td>
-          ${qHtml}
-          <td>
-            <span class="badge ${kategori.toLowerCase()}">${kategori}</span>
-          </td>
-          <td>${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : "-"}</td>
-        `;
-
-        tbody.appendChild(tr);
-      });
+      tbody.appendChild(tr);
     });
   });
 }
