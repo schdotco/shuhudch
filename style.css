@@ -1,31 +1,107 @@
+*{
+  box-sizing:border-box;
+}
+
 body{
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background:#f4f6f9;
   margin:0;
-  padding:20px;
+  padding:16px;
+  color:#212529;
 }
 
-.header{
-  margin-bottom:20px;
+/* TOPBAR */
+.topbar{
+  background:#0d6efd;
+  color:#fff;
+  padding:16px 20px;
+  border-radius:10px;
+  margin-bottom:16px;
 }
 
-.header h2{
+.topbar h2{
   margin:0;
+  font-size:20px;
+  font-weight:600;
 }
 
+.topbar small{
+  opacity:0.9;
+}
+
+/* CONTAINER */
 .container{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
+  grid-template-columns:1fr;
+  gap:16px;
 }
 
+/* FILTER */
+.filter-bar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.filter-bar select,
+.filter-bar button{
+  padding:8px 10px;
+  font-size:13px;
+}
+
+.filter-bar button{
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* SUMMARY GRID */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+}
+
+.summary-card{
+  padding:14px;
+  border-radius:10px;
+  color:#fff;
+}
+
+.summary-card span{
+  font-size:12px;
+  opacity:0.9;
+}
+
+.summary-card h3{
+  margin:4px 0 0;
+  font-size:22px;
+  font-weight:600;
+}
+
+/* WARNA */
+.green{background:#198754;}
+.blue{background:#0d6efd;}
+.yellow{background:#ffc107;color:#000;}
+.red{background:#dc3545;}
+
+/* CARD */
 .card{
   background:#fff;
-  padding:20px;
+  padding:16px;
   border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
+.card h3{
+  margin-top:0;
+  font-size:15px;
+  margin-bottom:12px;
+}
+
+/* MENU GRID */
 .menu-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
@@ -34,20 +110,14 @@ body{
 
 .menu-grid a{
   text-align:center;
-  padding:12px;
+  padding:10px;
   background:#0d6efd;
   color:#fff;
   border-radius:6px;
   text-decoration:none;
-  font-size:14px;
+  font-size:13px;
 }
 
 .menu-grid a:hover{
   background:#084298;
-}
-
-@media(max-width:768px){
-  .container{
-    grid-template-columns:1fr;
-  }
 }
