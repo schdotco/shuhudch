@@ -181,9 +181,38 @@ function valRadio(n){
 }
 
 function simpan(){
+
+  /* ================= VALIDASI IDENTITAS ================= */
+  if(!nama.value.trim()){
+    alert("Nama anak wajib diisi");
+    nama.focus();
+    return;
+  }
+
+  if(!nik.value.trim() || nik.value.length !== 16){
+    alert("NIK wajib diisi 16 digit");
+    nik.focus();
+    return;
+  }
+
+  if(!tglLahir.value){
+    alert("Tanggal lahir wajib diisi");
+    tglLahir.focus();
+    return;
+  }
+
+  /* ================= VALIDASI PERTANYAAN ================= */
+  for(let i=1;i<=10;i++){
+    if(valRadio(`q${i}`) === ""){
+      alert(`Pertanyaan nomor ${i} belum dijawab`);
+      return;
+    }
+  }
+
+  /* ================= SIMPAN KE FIREBASE ================= */
   const data = {
-    nama: nama.value,
-    nik: nik.value,
+    nama: nama.value.trim(),
+    nik: nik.value.trim(),
     tanggal_lahir: tglLahir.value,
     usia: 54,
     jawaban:{
@@ -202,7 +231,10 @@ function simpan(){
   };
 
   db.ref("kpsp_respon").push(data)
-    .then(()=>alert("Data KPSP 54 bulan berhasil disimpan"))
+    .then(()=>{
+      alert("Data KPSP 54 bulan berhasil disimpan");
+      location.href="index.html";
+    })
     .catch(err=>alert(err.message));
 }
 </script>
